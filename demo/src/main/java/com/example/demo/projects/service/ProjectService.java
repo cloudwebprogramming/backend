@@ -45,6 +45,22 @@ public class ProjectService {
         return getProject(savedProject.getId());
     }
 
+    public ProjectResponseDto joinByInviteCode(String inviteCode, String username) {
+        if (inviteCode == null || inviteCode.isEmpty()) {
+            throw new IllegalArgumentException("초대 코드는 필수입니다.");
+        }
+        if (username == null || username.isEmpty()) {
+            throw new IllegalArgumentException("사용자 아이디는 필수입니다.");
+        }
+
+        Project project = projectRepository.findByInviteCode(inviteCode)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 초대 코드입니다."));
+
+        memberService.joinProject(project.getId(), username);
+
+        return getProject(project.getId());
+    }
+
     public List<ProjectResponseDto> getProjectsByUsername(String username) {
         return projectRepository.findAll().stream()
                 .filter(p -> memberService.getAcceptedMembers(p.getId()).stream()

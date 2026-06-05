@@ -1,5 +1,6 @@
 package com.example.demo.projects.controller;
 
+import com.example.demo.projects.dto.JoinProjectRequestDto;
 import com.example.demo.projects.dto.ProjectRequestDto;
 import com.example.demo.projects.dto.ProjectResponseDto;
 import com.example.demo.projects.service.ProjectService;
@@ -23,6 +24,17 @@ public class ProjectController {
         try {
             ProjectResponseDto response = projectService.createProject(requestDto);
             return ResponseEntity.status(201).body(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<?> joinProject(@RequestBody JoinProjectRequestDto requestDto) {
+        try {
+            ProjectResponseDto response = projectService.joinByInviteCode(
+                    requestDto.getInviteCode(), requestDto.getUsername());
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -81,6 +81,24 @@ public class MemberService {
         return toDto(member, user.getUsername());
     }
 
+    public MemberResponseDto joinProject(Long projectId, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        Optional<Member> existingMember = memberRepository.findByProjectIdAndUserId(projectId, user.getId());
+        if (existingMember.isPresent()) {
+            throw new IllegalArgumentException("이미 참여 중이거나 가입 요청이 진행 중인 프로젝트입니다.");
+        }
+
+        Member member = new Member(null, projectId, user.getId(), user.getName(), "ACCEPTED");
+        memberRepository.save(member);
+
+        user.getProjectIds().add(projectId);
+        userRepository.save(user);
+
+        return toDto(member, user.getUsername());
+    }
+
     public List<MemberResponseDto> getAcceptedMembers(Long projectId) {
         return memberRepository.findByProjectId(projectId).stream()
                 .filter(m -> "ACCEPTED".equals(m.getStatus()))
