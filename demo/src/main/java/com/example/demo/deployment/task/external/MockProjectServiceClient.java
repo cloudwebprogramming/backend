@@ -14,8 +14,8 @@ public class MockProjectServiceClient implements ProjectServiceClient {
 
     @Override
     public boolean validateProjectId(Long projectId) {
-        // 데모용 프로젝트 1, 2번을 유효한 것으로 취급
-        return projectId != null && (projectId == 1L || projectId == 2L);
+        // 설계 문서(backend_task_plan Task 3) 명세: 프로젝트 검증은 항상 true를 반환하는 Stub
+        return true;
     }
 
     @Override
