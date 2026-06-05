@@ -57,6 +57,14 @@ public class MemoryTaskRepository implements TaskRepository {
     }
 
     @Override
+    public List<Task> findByProjectIdAndAssignee(Long projectId, String assignee) {
+        return database.stream()
+                .filter(task -> task.getProjectId().equals(projectId))
+                .filter(task -> task.getAssignee() != null && task.getAssignee().equals(assignee))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void clear() {
         database.clear();
         idSequence.set(1);

@@ -1,5 +1,6 @@
 package com.example.demo.deployment.task.controller;
 
+import com.example.demo.deployment.task.dto.TaskAssigneeRequestDto;
 import com.example.demo.deployment.task.dto.TaskCreateRequestDto;
 import com.example.demo.deployment.task.dto.TaskResponseDto;
 import com.example.demo.deployment.task.service.TaskService;
@@ -28,6 +29,14 @@ public class TaskController {
             @RequestBody TaskCreateRequestDto request) {
         TaskResponseDto response = taskService.createTask(projectId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PutMapping("/tasks/{taskId}/assignee")
+    public ResponseEntity<TaskResponseDto> updateTaskAssignee(
+            @PathVariable("taskId") Long taskId,
+            @RequestBody TaskAssigneeRequestDto request) {
+        TaskResponseDto response = taskService.updateTaskAssignee(taskId, request.getAssignee());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/projects/{projectId}/tasks")

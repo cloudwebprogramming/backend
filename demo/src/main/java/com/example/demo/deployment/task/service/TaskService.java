@@ -55,6 +55,25 @@ public class TaskService {
         return convertToResponseDto(savedTask);
     }
 
+    public TaskResponseDto updateTaskAssignee(Long taskId, String assignee) {
+        // 1. 할 일 존재 여부 검증
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 할 일을 찾을 수 없습니다. ID: " + taskId));
+
+        // 2. 담당자 업데이트 (빈 값인 경우 null로 처리하여 지정 취소 지원)
+        if (assignee == null || assignee.trim().isEmpty()) {
+            task.setAssignee(null);
+        } else {
+            task.setAssignee(assignee);
+        }
+
+        task.setUpdatedAt(java.time.LocalDateTime.now());
+
+        // 3. 저장 및 반환
+        Task updatedTask = taskRepository.save(task);
+        return convertToResponseDto(updatedTask);
+    }
+
     public List<TaskResponseDto> getTasksByProjectId(Long projectId) {
         return getTasksFiltered(projectId, null, null, null, null, null, "dueDate", "asc");
     }
@@ -62,14 +81,16 @@ public class TaskService {
     public List<TaskResponseDto> getTasksFiltered(Long projectId, String assignee, LocalDate dueDate,
                                                   String priority, String category, Boolean completed,
                                                   String sortBy, String sortOrder) {
-        // 1. 해당 프로젝트의 전체 할 일 로드
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
-
-        // 2. 다중 조건 필터링 적용 (3.5 ~ 3.8)
-        java.util.stream.Stream<Task> stream = tasks.stream();
+        // 1. 조건에 따른 할 일 로드 (분기 처리)
+        List<Task> tasks;
         if (assignee != null && !assignee.trim().isEmpty()) {
-            stream = stream.filter(t -> t.getAssignee() != null && t.getAssignee().equals(assignee));
+            tasks = taskRepository.findByProjectIdAndAssignee(projectId, assignee);
+        } else {
+            tasks = taskRepository.findByProjectId(projectId);
         }
+
+        // 2. 나머지 다중 조건 필터링 적용
+        java.util.stream.Stream<Task> stream = tasks.stream();
         if (dueDate != null) {
             stream = stream.filter(t -> t.getDueDate() != null && t.getDueDate().equals(dueDate));
         }

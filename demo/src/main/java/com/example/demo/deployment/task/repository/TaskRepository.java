@@ -9,5 +9,6 @@ public interface TaskRepository {
     Optional<Task> findById(Long id);
     List<Task> findAll();
     List<Task> findByProjectId(Long projectId);
+    List<Task> findByProjectIdAndAssignee(Long projectId, String assignee);
     void clear();
 }
