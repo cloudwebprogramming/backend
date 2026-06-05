@@ -17,13 +17,6 @@ public class MemoryTaskRepository implements TaskRepository {
     private final List<Task> database = new CopyOnWriteArrayList<>();
     private final AtomicLong idSequence = new AtomicLong(1);
 
-    @PostConstruct
-    public void initMockData() {
-        // 테스트 및 데모 편의성을 위해 초기 Mock 데이터 삽입
-        save(new Task(null, 1L, "발표 PPT 템플릿 제작", "발표 과제용 PPT 디자인 초안 구성", "홍길동", "발표자료", "높음", LocalDate.now().plusDays(3)));
-        save(new Task(null, 1L, "백엔드 API 아키텍처 구축", "역할 격리 패키지 및 DTO 스펙 규격화", "김철수", "백엔드", "높음", LocalDate.now().plusDays(5)));
-        save(new Task(null, 2L, "요구사항 분석 보고서 작성", "과제 기획 분석 보고서 작성", "이영희", "보고서", "보통", LocalDate.now().minusDays(1)));
-    }
 
     @Override
     public Task save(Task task) {

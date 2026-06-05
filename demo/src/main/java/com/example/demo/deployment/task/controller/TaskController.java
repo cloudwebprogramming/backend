@@ -16,11 +16,8 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class TaskController {
     private final TaskService taskService;
-    private final com.example.demo.deployment.task.external.ProjectServiceClient projectServiceClient;
-
-    public TaskController(TaskService taskService, com.example.demo.deployment.task.external.ProjectServiceClient projectServiceClient) {
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
-        this.projectServiceClient = projectServiceClient;
     }
 
     @PostMapping("/projects/{projectId}/tasks")
@@ -68,17 +65,6 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
-    // 2라운드 협업 및 동적 드롭박스 로딩을 위해 추가 노출하는 Mock API
-    @GetMapping("/projects")
-    public ResponseEntity<List<com.example.demo.deployment.task.dto.ProjectMockDto>> getProjects() {
-        return ResponseEntity.ok(projectServiceClient.getProjects());
-    }
-
-    @GetMapping("/projects/{projectId}/members")
-    public ResponseEntity<List<String>> getMembers(
-            @PathVariable("projectId") Long projectId) {
-        return ResponseEntity.ok(projectServiceClient.getMembers(projectId));
-    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
