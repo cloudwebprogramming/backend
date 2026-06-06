@@ -39,6 +39,22 @@ public class MemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByEmail(String email) {
+        if (email == null) return Optional.empty();
+        return database.stream()
+                .filter(u -> u.getEmail() != null && u.getEmail().equalsIgnoreCase(email))
+                .findFirst();
+    }
+
+    @Override
+    public Optional<User> findByStudentId(String studentId) {
+        if (studentId == null) return Optional.empty();
+        return database.stream()
+                .filter(u -> u.getStudentId() != null && u.getStudentId().equals(studentId))
+                .findFirst();
+    }
+
+    @Override
     public List<User> findAll() {
         return new ArrayList<>(database);
     }
