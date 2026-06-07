@@ -89,4 +89,28 @@ public class ProjectService {
                 memberService.getAcceptedMembers(project.getId())
         );
     }
+
+    public ProjectResponseDto updateProject(Long id, ProjectRequestDto requestDto) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다."));
+
+        if (requestDto.getTitle() != null && !requestDto.getTitle().isEmpty()) {
+            project.setTitle(requestDto.getTitle());
+        }
+        if (requestDto.getSubject() != null) {
+            project.setSubject(requestDto.getSubject());
+        }
+        if (requestDto.getDescription() != null) {
+            project.setDescription(requestDto.getDescription());
+        }
+
+        Project updatedProject = projectRepository.save(project);
+        return getProject(updatedProject.getId());
+    }
+
+    public void deleteProject(Long id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다."));
+        projectRepository.delete(id);
+    }
 }

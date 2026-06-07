@@ -9,5 +9,6 @@ public interface ProjectRepository {
     Optional<Project> findById(Long id);
     Optional<Project> findByInviteCode(String inviteCode);
     List<Project> findAll();
+    void delete(Long id);
     void clear();
 }
