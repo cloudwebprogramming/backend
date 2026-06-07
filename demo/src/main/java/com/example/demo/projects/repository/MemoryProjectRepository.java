@@ -46,6 +46,11 @@ public class MemoryProjectRepository implements ProjectRepository {
     }
 
     @Override
+    public void delete(Long id) {
+        database.removeIf(p -> p.getId().equals(id));
+    }
+
+    @Override
     public void clear() {
         database.clear();
         idSequence.set(1);
