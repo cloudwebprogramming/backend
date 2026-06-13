@@ -1,6 +1,7 @@
 package com.example.demo.projects.domain;
 
 import com.example.demo.members.domain.Member;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,16 +10,20 @@ public class Project {
     private String title;
     private String subject;
     private String description;
+    private Integer memberCount;
+    private LocalDate deadline;
     private String inviteCode;
     private List<Member> members = new ArrayList<>();
 
     public Project() {}
 
-    public Project(Long id, String title, String subject, String description, String inviteCode) {
+    public Project(Long id, String title, String subject, String description, Integer memberCount, LocalDate deadline, String inviteCode) {
         this.id = id;
         this.title = title;
         this.subject = subject;
         this.description = description;
+        this.memberCount = memberCount;
+        this.deadline = deadline;
         this.inviteCode = inviteCode;
     }
 
@@ -30,6 +35,10 @@ public class Project {
     public void setSubject(String subject) { this.subject = subject; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public Integer getMemberCount() { return memberCount; }
+    public void setMemberCount(Integer memberCount) { this.memberCount = memberCount; }
+    public LocalDate getDeadline() { return deadline; }
+    public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
     public String getInviteCode() { return inviteCode; }
     public void setInviteCode(String inviteCode) { this.inviteCode = inviteCode; }
     public List<Member> getMembers() { return members; }

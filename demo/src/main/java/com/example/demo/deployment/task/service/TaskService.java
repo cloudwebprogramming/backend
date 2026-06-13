@@ -2,7 +2,9 @@ package com.example.demo.deployment.task.service;
 
 import com.example.demo.deployment.task.domain.Task;
 import com.example.demo.deployment.task.dto.TaskCreateRequestDto;
+import com.example.demo.deployment.task.dto.TaskDetailUpdateRequestDto;
 import com.example.demo.deployment.task.dto.TaskResponseDto;
+import com.example.demo.deployment.task.dto.TaskStatusRequestDto;
 import com.example.demo.deployment.task.external.ProjectServiceClient;
 import com.example.demo.deployment.task.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,9 @@ public class TaskService {
                 request.getPriority(),
                 request.getDueDate()
         );
+        task.setDetailNotes(request.getDetailNotes());
+        task.setChecklist(request.getChecklist());
+        task.setStatus(normalizeStatus(request.getStatus()));
 
         // 4. 저장
         Task savedTask = taskRepository.save(task);
@@ -70,6 +75,29 @@ public class TaskService {
         task.setUpdatedAt(java.time.LocalDateTime.now());
 
         // 3. 저장 및 반환
+        Task updatedTask = taskRepository.save(task);
+        return convertToResponseDto(updatedTask);
+    }
+
+    public TaskResponseDto updateTaskDetails(Long taskId, TaskDetailUpdateRequestDto request) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 할 일을 찾을 수 없습니다. ID: " + taskId));
+
+        task.setDetailNotes(request.getDetailNotes());
+        task.setChecklist(request.getChecklist());
+        task.setUpdatedAt(java.time.LocalDateTime.now());
+
+        Task updatedTask = taskRepository.save(task);
+        return convertToResponseDto(updatedTask);
+    }
+
+    public TaskResponseDto updateTaskStatus(Long taskId, TaskStatusRequestDto request) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 할 일을 찾을 수 없습니다. ID: " + taskId));
+
+        task.setStatus(normalizeStatus(request.getStatus()));
+        task.setUpdatedAt(java.time.LocalDateTime.now());
+
         Task updatedTask = taskRepository.save(task);
         return convertToResponseDto(updatedTask);
     }
@@ -169,6 +197,20 @@ public class TaskService {
         }
     }
 
+    private String normalizeStatus(String status) {
+        if (status == null || status.trim().isEmpty()) {
+            return "예정";
+        }
+        switch (status) {
+            case "예정":
+            case "진행":
+            case "완료":
+                return status;
+            default:
+                throw new IllegalArgumentException("상태는 예정, 진행, 완료 중 하나여야 합니다.");
+        }
+    }
+
     public String calculateDDay(LocalDate dueDate) {
         if (dueDate == null) {
             return "";
@@ -190,9 +232,13 @@ public class TaskService {
                 task.getId(),
                 task.getProjectId(),
                 task.getTitle(),
+                task.getDescription(),
+                task.getDetailNotes(),
+                task.getChecklist(),
                 task.getAssignee(),
                 task.getCategory(),
                 task.getPriority(),
+                task.getStatus() == null ? (Boolean.TRUE.equals(task.getCompleted()) ? "완료" : "예정") : task.getStatus(),
                 task.getDueDate(),
                 calculateDDay(task.getDueDate()),
                 task.getCompleted()

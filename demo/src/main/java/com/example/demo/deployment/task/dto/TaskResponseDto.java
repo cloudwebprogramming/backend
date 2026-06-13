@@ -2,15 +2,21 @@ package com.example.demo.deployment.task.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskResponseDto {
     private Long taskId;
     private Long projectId;
     private String title;
+    private String description;
+    private String detailNotes;
+    private List<String> checklist = new ArrayList<>();
     private String assignee;
     private String category;
     private String priority;
+    private String status;
     private LocalDate dueDate;
     private String dday;
     private Boolean completed;
@@ -18,14 +24,21 @@ public class TaskResponseDto {
     public TaskResponseDto() {
     }
 
-    public TaskResponseDto(Long taskId, Long projectId, String title, String assignee, 
-                            String category, String priority, LocalDate dueDate, String dday, Boolean completed) {
+    public TaskResponseDto(Long taskId, Long projectId, String title, String description, String detailNotes,
+                            List<String> checklist, String assignee, String category, String priority, String status,
+                            LocalDate dueDate, String dday, Boolean completed) {
         this.taskId = taskId;
         this.projectId = projectId;
         this.title = title;
+        this.description = description;
+        this.detailNotes = detailNotes;
+        if (checklist != null) {
+            this.checklist = checklist;
+        }
         this.assignee = assignee;
         this.category = category;
         this.priority = priority;
+        this.status = status;
         this.dueDate = dueDate;
         this.dday = dday;
         this.completed = completed;
@@ -55,6 +68,30 @@ public class TaskResponseDto {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDetailNotes() {
+        return detailNotes;
+    }
+
+    public void setDetailNotes(String detailNotes) {
+        this.detailNotes = detailNotes;
+    }
+
+    public List<String> getChecklist() {
+        return checklist;
+    }
+
+    public void setChecklist(List<String> checklist) {
+        this.checklist = checklist;
+    }
+
     public String getAssignee() {
         return assignee;
     }
@@ -77,6 +114,14 @@ public class TaskResponseDto {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDate getDueDate() {

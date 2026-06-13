@@ -2,7 +2,9 @@ package com.example.demo.deployment.task.controller;
 
 import com.example.demo.deployment.task.dto.TaskAssigneeRequestDto;
 import com.example.demo.deployment.task.dto.TaskCreateRequestDto;
+import com.example.demo.deployment.task.dto.TaskDetailUpdateRequestDto;
 import com.example.demo.deployment.task.dto.TaskResponseDto;
+import com.example.demo.deployment.task.dto.TaskStatusRequestDto;
 import com.example.demo.deployment.task.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,22 @@ public class TaskController {
             @PathVariable("taskId") Long taskId,
             @RequestBody TaskAssigneeRequestDto request) {
         TaskResponseDto response = taskService.updateTaskAssignee(taskId, request.getAssignee());
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/tasks/{taskId}/details")
+    public ResponseEntity<TaskResponseDto> updateTaskDetails(
+            @PathVariable("taskId") Long taskId,
+            @RequestBody TaskDetailUpdateRequestDto request) {
+        TaskResponseDto response = taskService.updateTaskDetails(taskId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/tasks/{taskId}/status")
+    public ResponseEntity<TaskResponseDto> updateTaskStatus(
+            @PathVariable("taskId") Long taskId,
+            @RequestBody TaskStatusRequestDto request) {
+        TaskResponseDto response = taskService.updateTaskStatus(taskId, request);
         return ResponseEntity.ok(response);
     }
 

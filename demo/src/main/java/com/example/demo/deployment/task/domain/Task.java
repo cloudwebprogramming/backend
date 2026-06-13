@@ -2,15 +2,20 @@ package com.example.demo.deployment.task.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Task {
     private Long id;
     private Long projectId;
     private String title;
     private String description;
+    private String detailNotes;
+    private List<String> checklist;
     private String assignee;
     private String category;
     private String priority;
+    private String status;
     private LocalDate dueDate;
     private Boolean completed;
     private LocalDateTime createdAt;
@@ -18,6 +23,8 @@ public class Task {
 
     public Task() {
         this.completed = false;
+        this.status = "예정";
+        this.checklist = new ArrayList<>();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -28,9 +35,12 @@ public class Task {
         this.projectId = projectId;
         this.title = title;
         this.description = description;
+        this.detailNotes = "";
+        this.checklist = new ArrayList<>();
         this.assignee = assignee;
         this.category = category;
         this.priority = priority;
+        this.status = "예정";
         this.dueDate = dueDate;
         this.completed = false;
         this.createdAt = LocalDateTime.now();
@@ -69,6 +79,22 @@ public class Task {
         this.description = description;
     }
 
+    public String getDetailNotes() {
+        return detailNotes;
+    }
+
+    public void setDetailNotes(String detailNotes) {
+        this.detailNotes = detailNotes;
+    }
+
+    public List<String> getChecklist() {
+        return checklist;
+    }
+
+    public void setChecklist(List<String> checklist) {
+        this.checklist = checklist;
+    }
+
     public String getAssignee() {
         return assignee;
     }
@@ -91,6 +117,15 @@ public class Task {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+        this.completed = "완료".equals(status);
     }
 
     public LocalDate getDueDate() {

@@ -35,7 +35,8 @@ public class ProjectService {
             }
         }
 
-        Project project = new Project(null, requestDto.getTitle(), requestDto.getSubject(), requestDto.getDescription(), inviteCode);
+        Project project = new Project(null, requestDto.getTitle(), requestDto.getSubject(), requestDto.getDescription(),
+                requestDto.getMemberCount(), requestDto.getDeadline(), inviteCode);
         Project savedProject = projectRepository.save(project);
 
         if (requestDto.getCreatorUsername() != null && !requestDto.getCreatorUsername().isEmpty()) {
@@ -66,7 +67,7 @@ public class ProjectService {
                 .filter(p -> memberService.getAcceptedMembers(p.getId()).stream()
                         .anyMatch(m -> m.getUsername().equals(username)))
                 .map(p -> new ProjectResponseDto(
-                        p.getId(), p.getTitle(), p.getSubject(), p.getDescription(), p.getInviteCode(),
+                        p.getId(), p.getTitle(), p.getSubject(), p.getDescription(), p.getMemberCount(), p.getDeadline(), p.getInviteCode(),
                         memberService.getAcceptedMembers(p.getId())
                 ))
                 .collect(Collectors.toList());
@@ -75,7 +76,7 @@ public class ProjectService {
     public List<ProjectResponseDto> getAllProjects() {
         return projectRepository.findAll().stream()
                 .map(p -> new ProjectResponseDto(
-                        p.getId(), p.getTitle(), p.getSubject(), p.getDescription(), p.getInviteCode(),
+                        p.getId(), p.getTitle(), p.getSubject(), p.getDescription(), p.getMemberCount(), p.getDeadline(), p.getInviteCode(),
                         memberService.getAcceptedMembers(p.getId())
                 ))
                 .collect(Collectors.toList());
@@ -85,7 +86,8 @@ public class ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("프로젝트를 찾을 수 없습니다."));
         return new ProjectResponseDto(
-                project.getId(), project.getTitle(), project.getSubject(), project.getDescription(), project.getInviteCode(),
+                project.getId(), project.getTitle(), project.getSubject(), project.getDescription(),
+                project.getMemberCount(), project.getDeadline(), project.getInviteCode(),
                 memberService.getAcceptedMembers(project.getId())
         );
     }
@@ -102,6 +104,12 @@ public class ProjectService {
         }
         if (requestDto.getDescription() != null) {
             project.setDescription(requestDto.getDescription());
+        }
+        if (requestDto.getMemberCount() != null) {
+            project.setMemberCount(requestDto.getMemberCount());
+        }
+        if (requestDto.getDeadline() != null) {
+            project.setDeadline(requestDto.getDeadline());
         }
 
         Project updatedProject = projectRepository.save(project);
